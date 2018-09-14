@@ -9,5 +9,6 @@ const logger = require("./logger");
 
 logger.log("sathish");
 
-const path = require("path");
-console.log(path.parse(__filename));
+// learing the node's path module
+const pathObj = require("./learning node modules/path_module");
+logger.log(pathObj);
