@@ -1,11 +1,10 @@
-var member = "";
+const logger = require("./logger");
+// console.log(logger);
 
-console.log(global.member);
+// logger = 1;
+// logger.log("sathish");
 
-//avoid writing local variables in the global scope
-//go for modularity - by a concept called 'module'
+// if a fucntion is exported directly via 'require'
+// we can call the function directly
 
-//every node module should have one module as the main module
-//app.js is the main module here
-
-console.log(module);
+logger.log("sathish");
