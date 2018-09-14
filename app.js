@@ -8,3 +8,6 @@ const logger = require("./logger");
 // we can call the function directly
 
 logger.log("sathish");
+
+const path = require("path");
+console.log(path.parse(__filename));
