@@ -10,11 +10,17 @@ const logger = require("./logger");
 logger.log("sathish");
 
 // learing the node's path module
+logger.log("1.Learning path module");
 const pathObj = require("./learning node modules/path_module");
 logger.log(pathObj);
 
 //learning the node's OS module
+logger.log("2.Learning os module");
 const osObj = require("./learning node modules/os_module");
 logger.log(osObj);
 logger.log("Total memory: " + osObj.osTotalMem);
 logger.log("Free Memory: " + osObj.osFreeMem);
+
+//learning the node's filesystem module
+logger.log("3.Learning filesystem module");
+const files = require("./learning node modules/fs_module");
