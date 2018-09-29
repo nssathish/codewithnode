@@ -13,6 +13,12 @@ app.get("/api/courses", (req, res) => {
   res.end();
 });
 
+app.get("/api/courses/:year/:month", (req, res) => {
+  res.send(
+    JSON.stringify({ "field params": req.params, "query params": req.query })
+  );
+});
+console.log(process.env.PORT);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => console.log(`Listening to port ${port}`));
