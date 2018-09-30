@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/courses", (req, res) => {
-  const courses = ["math", "computer science", "physics"];
+  // const courses = ["math", "computer science", "physics"];
   //   var course_list = courses.join(",");
   res.send(JSON.stringify(courses));
   res.end();
@@ -33,23 +33,25 @@ app.get("/api/courses/:year/:month", (req, res) => {
 
 app.get("/api/courses/:id", (req, res) => {
   const result = courses.find(c => c.id === parseInt(req.params.id));
-  if (!result) res.status(404).send("The course for the given ID is not found");
-  res.send(result);
+  if (!result) {
+    res.status(404).send("The course for the given ID is not found");
+    return;
+  } else {
+    res.send(result);
+  }
 });
 
 app.post("/api/courses", (req, res) => {
   //For validation we can use traditional if..then..else..then
   //or
   //"joi" node package can be use
-  const schema = {
-    name: Joi.string()
-      .min(3)
-      .required()
-  };
-  const validation = Joi.validate(req.body, schema);
+  // const validation = validateCourse(req.body);
 
-  if (validation.error) {
-    res.status(400).send(validation.error.details[0].message);
+  //Object destructuring
+  const { error } = validateCourse(req.body);
+
+  if (error) {
+    res.status(400).send(error.details[0].message);
     return;
   }
   const result = {
@@ -61,6 +63,37 @@ app.post("/api/courses", (req, res) => {
   res.send(result);
 });
 
+app.put("/api/courses/:id", (req, res) => {
+  //Check if the course exits for the ID
+  //else return 404
+  const course = courses.find(c => c.id === parseInt(req.params.id));
+  if (!course) {
+    res.status(404).send("The course for the given ID is not found");
+    return;
+  }
+
+  //check if the course body has name
+  //else return 400
+  const { error } = validateCourse(req.body);
+  if (error) {
+    res.status(400).send(error.details[0].message);
+    return;
+  }
+  //else update the course
+  course.name = req.body.name;
+
+  //return the course
+  res.send(course);
+});
+
+function validateCourse(course) {
+  const schema = {
+    name: Joi.string()
+      .min(3)
+      .required()
+  };
+  return Joi.validate(course, schema);
+}
 console.log("Env port: " + process.env.PORT);
 const port = process.env.PORT || 3000;
 
