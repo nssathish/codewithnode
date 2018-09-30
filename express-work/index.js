@@ -1,3 +1,4 @@
+const Joi = require("joi");
 const express = require("express");
 const app = express();
 
@@ -37,6 +38,20 @@ app.get("/api/courses/:id", (req, res) => {
 });
 
 app.post("/api/courses", (req, res) => {
+  //For validation we can use traditional if..then..else..then
+  //or
+  //"joi" node package can be use
+  const schema = {
+    name: Joi.string()
+      .min(3)
+      .required()
+  };
+  const validation = Joi.validate(req.body, schema);
+
+  if (validation.error) {
+    res.status(400).send(validation.error.details[0].message);
+    return;
+  }
   const result = {
     id: courses.length + 1,
     name: req.body.name
@@ -46,7 +61,7 @@ app.post("/api/courses", (req, res) => {
   res.send(result);
 });
 
-console.log("Environmental port: " + process.env.PORT);
+console.log("Env port: " + process.env.PORT);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => console.log(`Listening to port ${port}`));
