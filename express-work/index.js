@@ -17,10 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/courses", (req, res) => {
-  // const courses = ["math", "computer science", "physics"];
-  //   var course_list = courses.join(",");
   res.send(JSON.stringify(courses));
-  res.end();
 });
 
 app.get("/api/courses/:year/:month", (req, res) => {
@@ -30,17 +27,14 @@ app.get("/api/courses/:year/:month", (req, res) => {
 });
 
 //GET course by ID
-
 app.get("/api/courses/:id", (req, res) => {
   const result = courses.find(c => c.id === parseInt(req.params.id));
-  if (!result) {
-    res.status(404).send("The course for the given ID is not found");
-    return;
-  } else {
-    res.send(result);
-  }
+  if (!result)
+    return res.status(404).send("The course for the given ID is not found");
+  res.send(result);
 });
 
+//POST a new course
 app.post("/api/courses", (req, res) => {
   //For validation we can use traditional if..then..else..then
   //or
@@ -50,10 +44,8 @@ app.post("/api/courses", (req, res) => {
   //Object destructuring
   const { error } = validateCourse(req.body);
 
-  if (error) {
-    res.status(400).send(error.details[0].message);
-    return;
-  }
+  if (error) return res.status(400).send(error.details[0].message);
+
   const result = {
     id: courses.length + 1,
     name: req.body.name
@@ -63,26 +55,33 @@ app.post("/api/courses", (req, res) => {
   res.send(result);
 });
 
+//PUT ie., update a course for the ID :id
 app.put("/api/courses/:id", (req, res) => {
   //Check if the course exits for the ID
   //else return 404
   const course = courses.find(c => c.id === parseInt(req.params.id));
-  if (!course) {
-    res.status(404).send("The course for the given ID is not found");
-    return;
-  }
+  if (!course)
+    return res.status(404).send("The course for the given ID is not found");
 
   //check if the course body has name
   //else return 400
   const { error } = validateCourse(req.body);
-  if (error) {
-    res.status(400).send(error.details[0].message);
-    return;
-  }
+  if (error) return res.status(400).send(error.details[0].message);
   //else update the course
   course.name = req.body.name;
 
   //return the course
+  res.send(course);
+});
+
+//DELETE ie., delete the course for the ID :id
+app.delete("/api/courses/:id", (req, res) => {
+  const course = courses.find(c => c.id === parseInt(req.params.id));
+  if (!course)
+    return res.status(404).send("The course for the given ID is not found");
+  const index = courses.indexOf(course);
+  courses.splice(index, 1);
+
   res.send(course);
 });
 
