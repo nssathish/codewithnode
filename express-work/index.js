@@ -1,8 +1,27 @@
 const Joi = require("joi");
 const express = require("express");
+
+//express middleware functions
+const morgan = require('morgan')
+const helmet = require('helmet')
+
 const app = express();
 
+//custom middleware
+const logger = require('./logger')
+const auth = require('./auth')
+
+//installing built-in middleware
 app.use(express.json());
+app.use(express.urlencoded( { extended: true})) //it allow POST information as url encoded form data like 'key=value&key=value&key=value' in the url
+app.use(express.static('public'));
+
+app.use(morgan('tiny'))
+app.use(helmet())
+
+//installing custom middleware
+app.use(logger)
+app.use(auth)
 
 var courses = [
   { id: 1, name: "Course1" },
