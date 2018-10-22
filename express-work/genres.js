@@ -33,7 +33,7 @@ app.post("/api/genres", (req, res) => {
 // R - Read
 //GET genre by id
 app.get("/api/genres/:id", (req, res) => {
-  //   const genre = genres.filter(g => g.id === parseInt(req.params.id));
+  //const genre = genres.filter(g => g.id === parseInt(req.params.id));
   const genre = genres.find(g => g.id === parseInt(req.params.id));
   if (!genre)
     return res.status(404).send(`genre not found for ${req.params.id}`);
@@ -43,13 +43,16 @@ app.get("/api/genres/:id", (req, res) => {
 // U - Update
 //PUT - update the name of a genre
 app.put("/api/genres/:id", (req, res) => {
+  const genre = genres.find(g => g.id === parseInt(req.params.id));
+  if (!genre)
+      return res.status(404).send(`ID ${req.params.id} to update the genre is not found`)
   const { error } = validateGenres(req.body);
-  if (error)
+  if (error) {
     return res
       .status(400)
       .send("Name of the genre should be atleast 3 letters");
+  }
 
-  const genre = genres.find(g => g.id === parseInt(req.params.id));
   genre.name = req.body.name;
   return res.send(JSON.stringify(genres));
 });
@@ -57,8 +60,12 @@ app.put("/api/genres/:id", (req, res) => {
 // D - Delete
 //DELETE - a genre
 app.delete("/api/genres/:id", (req, res) => {
-  if (genres.find(g => g.id === parseInt(req.params.id)))
-    return res.send(genres.filter(g => g.id !== parseInt(req.params.id)));
+  const genre = genres.find( g => g.id === parseInt(req.params.id))
+  if (genre) {
+    const index = genres.indexOf(genre)
+    genres.splice(index,1)
+    return res.send(JSON.stringify(genres))
+  }
   return res
     .status(404)
     .send(`Given ID ${req.params.id} is not found in the genres`);
