@@ -2,6 +2,15 @@ const Joi = require("joi");
 const express = require("express");
 const config = require("config");
 
+//the debugging namespace can be only one to make the debug call handy**
+//the debugging namespace can be anything
+//The namespace call is also based upon the env DEBUG
+//DEBUG=app:startup
+//DEBUG=app:db
+//DEBUG=app:startup,app:db
+const startupDebugger = require("debug")("app:startup"); //this app:startup is a namespace chosen for application
+const dbDebugger = require("debug")("app:db"); //this app:db is a namespace chosen for db related changes and debugging
+
 //express middleware functions
 const morgan = require("morgan");
 const helmet = require("helmet");
@@ -20,12 +29,19 @@ app.use(express.static("public"));
 //anything can be chosen here to check the environment
 console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 console.log(`env: ${app.get("env")}`);
+//startupDebugger(`NODE_ENV: ${process.env.NODE_ENV}`); // we cannot use the backtick `` in debug functions (its specific to console.log)
+//though we are not doing any DB operation here to debug, let's assume we did
+//dbDebugger(`env: ${app.get("env")}`); // we cannot use the backtick `` in debug functions (its specific to console.log)
 
 //any middleware or routing can be used based on the environment we have chosen
 if (app.get("env") === "development") {
   app.use(morgan("tiny"));
-  console.log("Morgan enabled...");
+  startupDebugger("Morgan enabled...");
 }
+
+//DB work ..
+dbDebugger("Connected to database");
+
 //For the enterprise applications we need to configure the environment dynamically based on the config files
 //For that we are going to use the npm package 'config'
 //P.S: the configuration file names should '.json' of NODE_ENV name, the 'config' package works that way (case insensitive)
