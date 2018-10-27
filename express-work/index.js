@@ -21,6 +21,10 @@ const app = express();
 const logger = require("./logger");
 const auth = require("./auth");
 
+//Templating engines 'pug', 'mustasche' , 'EJS'
+//we are using pug
+app.set("view engine", "pug");
+app.set("views", "./views");
 //installing built-in middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); //it allows POST information as url encoded form data like 'key=value&key=value&key=value' in the url
@@ -68,7 +72,8 @@ var courses = [
 ];
 
 app.get("/", (req, res) => {
-  res.send("Hello world");
+  //res.send("Hello world");
+  res.render("index", { title: "My express App", message: "Hello world" });
   res.end();
 });
 
