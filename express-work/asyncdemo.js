@@ -6,42 +6,38 @@ if (debug.enabled === false) {
 }
 
 debug("Before");
-getUser(1, getRepositories);
+// debug(getUser(1)); //output a dump of the Promise object => 'Promise { <pending> }' is the output
+
+getUser(1)
+  .then(user => getRepositories(user.gitHubUsername))
+  .then(repos => getCommits(repos[0]))
+  .then(commits => console.log(commits))
+  .catch(err => console.log(err.message));
+
 debug("After");
 
+function getUser(id) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      debug("Reading user from the database...");
+      resolve({ id: id, gitHubUsername: "sathish" });
+    }, 2000);
+  });
+}
+function getRepositories(username) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      debug("Getting repositories from github");
+      const repos = ["repo1", "repo2", "repo3"];
+      resolve(repos);
+    }, 2000);
+  });
+}
 function getCommits(repo) {
-  debug("Repos", repo);
-  getCommits(repo, displayCommits);
-}
-
-function getUser(id, callback) {
-  setTimeout(() => {
-    debug("Reading user from the database...");
-    callback({ id: id, gitHubUsername: "sathish" });
-  }, 2000);
-}
-
-function getRepositories(username, callback) {
-  setTimeout(() => {
-    debug("Getting repositories from github");
-    const repos = ["repo1", "repo2", "repo3"];
-    console.log(callback);
-    callback(repos);
-  }, 2000);
-}
-function getRepositories(user) {
-  //since everything is async here when gitRepositories is called 'user' object will be undefined
-  if (user !== undefined) {
-    debug("User", user);
-    getRepositories(user.gitHubUsername, getCommits);
-  }
-}
-
-function getCommits(repo, callback) {
-  setTimeout(() => {
-    callback(["commit1", "commit2", "commit3"]);
-  }, 2000);
-}
-function displayCommits(commits) {
-  debug(commits);
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      debug("Getting commits from the repo", repo);
+      resolve(["commit1", "commit2", "commit3"]);
+    }, 2000);
+  });
 }
