@@ -30,7 +30,7 @@ function getCustomer(id) {
         id: id,
         name: "Sathish",
         isGold: false,
-        email: "sathish@email.com"
+        email: ""
       });
     }, 2000);
   });
@@ -57,7 +57,7 @@ function SendEmail(email, movies) {
         resolve(movies);
         debug("Email Sent..");
       } else {
-        debug("Email id invalid");
+        reject(new Error("Email id invalid"));
       }
     }, 2000);
   });
