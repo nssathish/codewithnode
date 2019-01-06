@@ -23,7 +23,7 @@ mongoose
 //collection - table
 //document - row in the table
 const courseSchema = new mongoose.Schema({
-  name: String,
+  name: { type: String, required: true },
   author: String,
   tags: [String],
   date: { type: Date, default: Date.now },
@@ -38,7 +38,7 @@ const Course = mongoose.model("Course", courseSchema);
 async function createCourse() {
   //create a new document using the course model
   const course = new Course({
-    name: "Node.js course",
+    //name: "Node.js course",
     author: "kumar",
     tags: ["Nodejs", "backend"],
     isPublished: false,
@@ -46,10 +46,16 @@ async function createCourse() {
   });
 
   //save model
-  // const result = await course.save();
-  // debug(result);
+  try {
+    const result = await course.save();
+    debug(result);
+  } catch (ex) {
+    debug(ex.message);
+  }
 }
-// createCourse()
+createCourse()
+  .then(() => debug("Created course successfully"))
+  .catch(() => debug("course creating failed"));
 //   .then(() => console.log("Created course schema"))
 //   .catch(() => new Error("Couldn't create schema"));
 
